@@ -17,6 +17,19 @@ import {
 } from "lucide-react";
 
 const StudentGradingSystem = () => {
+  // College Information State
+  const [collegeName, setCollegeName] = useState("");
+  const [collegeAddress, setCollegeAddress] = useState("");
+  const [collegePhone, setCollegePhone] = useState("");
+  const [collegeEmail, setCollegeEmail] = useState("");
+  const [yourName, setYourName] = useState("");
+
+  // Statistical Analysis State
+  const [showStats, setShowStats] = useState(false);
+  const [minMark, setMinMark] = useState(null);
+  const [maxMark, setMaxMark] = useState(null);
+  const [medianMark, setMedianMark] = useState(null);
+
   const [rollNumber, setRollNumber] = useState("");
   const [studentName, setStudentName] = useState("");
   const [subjects, setSubjects] = useState([{ name: "", mark: 0, credit: 0 }]);
@@ -64,6 +77,43 @@ const StudentGradingSystem = () => {
     if (marks >= 60) return "C";
     if (marks >= 50) return "P";
     return "F";
+  };
+
+  const calculateMinimum = () => {
+    const marks = subjects.filter(s => s.name.trim() !== "").map(s => s.mark);
+    if (marks.length === 0) {
+      alert("Please enter subject marks first");
+      return;
+    }
+    const min = Math.min(...marks);
+    setMinMark(min);
+    setShowStats(true);
+  };
+
+  const calculateMaximum = () => {
+    const marks = subjects.filter(s => s.name.trim() !== "").map(s => s.mark);
+    if (marks.length === 0) {
+      alert("Please enter subject marks first");
+      return;
+    }
+    const max = Math.max(...marks);
+    setMaxMark(max);
+    setShowStats(true);
+  };
+
+  const calculateMedian = () => {
+    const marks = subjects.filter(s => s.name.trim() !== "").map(s => s.mark);
+    if (marks.length === 0) {
+      alert("Please enter subject marks first");
+      return;
+    }
+    const sortedMarks = [...marks].sort((a, b) => a - b);
+    const mid = Math.floor(sortedMarks.length / 2);
+    const median = sortedMarks.length % 2 === 0 
+      ? (sortedMarks[mid - 1] + sortedMarks[mid]) / 2 
+      : sortedMarks[mid];
+    setMedianMark(median);
+    setShowStats(true);
   };
 
   const calculateTotal = () => {
@@ -181,6 +231,84 @@ const StudentGradingSystem = () => {
 
         {/* Main Card Layout */}
         <div className="space-y-4">
+          {/* College Information Template */}
+          <div className="bg-white/80 rounded-2xl shadow p-4 border border-white/50">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-1 bg-gradient-to-r from-purple-500 to-purple-600 rounded">
+                <GraduationCap className="text-white" size={14} />
+              </div>
+              <h2 className="text-lg font-bold text-slate-800">College Information</h2>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  College Name
+                </label>
+                <input
+                  type="text"
+                  value={collegeName}
+                  onChange={(e) => setCollegeName(e.target.value)}
+                  className="w-full px-2 py-1.5 text-xs bg-white/90 border border-slate-200 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition shadow-sm"
+                  placeholder="Enter college name"
+                />
+              </div>
+              
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  Address
+                </label>
+                <textarea
+                  value={collegeAddress}
+                  onChange={(e) => setCollegeAddress(e.target.value)}
+                  className="w-full px-2 py-1.5 text-xs bg-white/90 border border-slate-200 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition shadow-sm resize-none"
+                  placeholder="Enter college address"
+                  rows="2"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Phone No
+                  </label>
+                  <input
+                    type="tel"
+                    value={collegePhone}
+                    onChange={(e) => setCollegePhone(e.target.value)}
+                    className="w-full px-2 py-1.5 text-xs bg-white/90 border border-slate-200 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition shadow-sm"
+                    placeholder="Phone number"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Email ID
+                  </label>
+                  <input
+                    type="email"
+                    value={collegeEmail}
+                    onChange={(e) => setCollegeEmail(e.target.value)}
+                    className="w-full px-2 py-1.5 text-xs bg-white/90 border border-slate-200 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition shadow-sm"
+                    placeholder="Email address"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  value={yourName}
+                  onChange={(e) => setYourName(e.target.value)}
+                  className="w-full px-2 py-1.5 text-xs bg-white/90 border border-slate-200 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition shadow-sm"
+                  placeholder="Enter your name"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Student Details Section */}
           <div className="bg-white/80 rounded-2xl shadow p-4 border border-white/50">
             <div className="flex items-center gap-2 mb-4">
@@ -314,6 +442,75 @@ const StudentGradingSystem = () => {
               <Calculator size={16} />
               Calculate
             </button>
+          </div>
+
+          {/* Statistical Analysis Section */}
+          <div className="bg-white/80 rounded-2xl shadow p-4 border border-white/50">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-1 bg-gradient-to-r from-orange-500 to-red-600 rounded">
+                <BarChart3 className="text-white" size={14} />
+              </div>
+              <h2 className="text-lg font-bold text-slate-800">Statistical Analysis</h2>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <button
+                onClick={calculateMinimum}
+                className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded hover:from-red-600 hover:to-red-700 shadow flex items-center justify-center gap-1 text-xs font-medium"
+              >
+                <TrendingUp size={14} />
+                Show Minimum
+              </button>
+              <button
+                onClick={calculateMaximum}
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded hover:from-green-600 hover:to-green-700 shadow flex items-center justify-center gap-1 text-xs font-medium"
+              >
+                <TrendingUp size={14} />
+                Show Maximum
+              </button>
+              <button
+                onClick={calculateMedian}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded hover:from-blue-600 hover:to-blue-700 shadow flex items-center justify-center gap-1 text-xs font-medium"
+              >
+                <Target size={14} />
+                Show Median
+              </button>
+            </div>
+
+            {/* Statistics Display */}
+            {showStats && (minMark !== null || maxMark !== null || medianMark !== null) && (
+              <div className="space-y-2">
+                {minMark !== null && (
+                  <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-xl p-3 border border-red-200">
+                    <div className="text-center">
+                      <p className="text-xs font-semibold text-red-800 mb-1">Minimum Mark</p>
+                      <p className="text-xl font-bold text-red-600">{minMark}</p>
+                      <p className="text-xs text-red-600 mt-1">Grade: {getGradeFromMarks(minMark)}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {maxMark !== null && (
+                  <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-3 border border-green-200">
+                    <div className="text-center">
+                      <p className="text-xs font-semibold text-green-800 mb-1">Maximum Mark</p>
+                      <p className="text-xl font-bold text-green-600">{maxMark}</p>
+                      <p className="text-xs text-green-600 mt-1">Grade: {getGradeFromMarks(maxMark)}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {medianMark !== null && (
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-3 border border-blue-200">
+                    <div className="text-center">
+                      <p className="text-xs font-semibold text-blue-800 mb-1">Median Mark</p>
+                      <p className="text-xl font-bold text-blue-600">{medianMark.toFixed(1)}</p>
+                      <p className="text-xs text-blue-600 mt-1">Grade: {getGradeFromMarks(medianMark)}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Results & Analysis Section */}
